@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Many transparent overlays test</title>
+
+    <link rel="stylesheet" href="leaflet.css">
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #leftPane {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70%;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 80%;
+        }
+
+        #rightPane {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 27%;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .template {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="leftPane">
+
+    <h1>Many transparent overlays test</h1>
+    <div id="map"></div>
+    <p>Source: http://crevisio.com/photo/PiQA9tpp3</p>
+
+</div>
+
+<div id="rightPane">
+
+    <h2>Options</h2>
+
+    <input id="all" type="checkbox" /><label for="all"> Select all</label>
+
+    <form id="options"></form>
+
+    <div id="overlayControlTemplate" class="template">
+        <input type="checkbox" /><label></label>
+        <input type="range" min="0" max="100" value="100"/> Opacity
+    </div>
+
+</div>
+
+
+
+<script src="leaflet-src.js"></script>
+
+<script>
+
+    var overlayNames = [
+            "original",
+            "bw-average2",
+            "boat1",
+            "boat2",
+            "boat3",
+            "boat4",
+            "boat5",
+            "building1",
+            "building2",
+            "building3",
+            "building4",
+            "building5",
+            "building6",
+            "building7",
+            "building8",
+            "building9",
+            "building10",
+            "redSpot1",
+            "redSpot2",
+            "redSpot3",
+            "redSpot4",
+            "redSpot5",
+            "blueSpot1",
+            "blueSpot2",
+            "blueSpot3",
+            "blueSpot4",
+            "blueSpot5"
+    ],
+            overlays = {},
+            name,
+            l = 0,
+            options = document.getElementById("options"),
+            overlayControlTemplate = document.getElementById("overlayControlTemplate");
+
+    for (; l < overlayNames.length; l += 1) {
+        name = overlayNames[l];
+        overlays[name] = L.tileLayer("../{z}/{x}/{y}" + name + ".png", {maxZoom: 4});
+
+        createOverlayControl(name, overlays[name]);
+    }
+
+    document.getElementById("all").addEventListener("change", function (evt) {
+        var checked = evt.target.checked,
+            inputs = options.getElementsByTagName("input"),
+            i = 0,
+            input;
+
+        for (; i < inputs.length; i += 1) {
+            input = inputs[i];
+
+            if (input.type === "checkbox") {
+                input.checked = checked;
+                fireEvent(input, "change");
+            }
+        }
+    });
+
+    var map = L.map(
+            "map",
+            {
+                center: [0, 0],
+                zoom: 0
+            }
+    );
+
+    L.tileLayer("../{z}/{x}/{y}" + "whiteBG" + ".png", {maxZoom: 4}).addTo(map);
+
+    function createOverlayControl(id, overlay) {
+        var newControl = overlayControlTemplate.cloneNode(true), // Deep copy.
+            node;
+
+        newControl.id = id;
+        newControl.className = "";
+        newControl.overlay = overlay
+
+        node = nextTag(newControl.firstChild, "input");
+        node.id = id + "check";
+        node.addEventListener("change", addRemoveOverlay);
+
+        node = nextTag(node, "label");
+        node.setAttribute("for", id + "check");
+        node.innerHTML = " " + id;
+
+        node = nextTag(node, "input");
+        node.addEventListener("change", changeOverlayOpacity);
+
+        options.appendChild(newControl);
+    }
+
+    function nextTag(node, tagName) {
+        tagName = tagName.toUpperCase();
+
+        while (node && node.tagName !== tagName) {
+            node = node.nextSibling;
+        }
+        return node;
+    }
+
+    function addRemoveOverlay(evt) {
+        var input = evt.target,
+            overlay = input.parentNode.overlay;
+
+        if (input.checked) {
+            map.addLayer(overlay);
+        } else {
+            map.removeLayer(overlay);
+        }
+    }
+
+    function changeOverlayOpacity(evt) {
+        var input = evt.target,
+            overlay = input.parentNode.overlay;
+
+        overlay.setOpacity(input.value / 100);
+    }
+
+    // Adapted from http://stackoverflow.com/questions/2490825/how-to-trigger-event-in-javascript
+    var fireEvent = (function () {
+
+        // Compliant browsers.
+        if (document.createEvent) {
+            return function (element, eventName) {
+                var event = document.createEvent("HTMLEvents");
+
+                event.initEvent(eventName, true, true);
+                event.eventName = eventName;
+                element.dispatchEvent(event);
+            };
+        } else {
+            // IE.
+            return function (element, eventName) {
+                var event = document.createEventObject();
+
+                event.eventType = eventName;
+                event.eventName = eventName;
+                element.fireEvent("on" + event.eventType, event);
+            };
+        }
+    })();
+
+</script>
+
+</body>
+</html>
