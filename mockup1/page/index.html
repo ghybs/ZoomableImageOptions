@@ -110,7 +110,11 @@
 
     for (; l < overlayNames.length; l += 1) {
         name = overlayNames[l];
-        overlays[name] = L.tileLayer("../{z}/{x}/{y}" + name + ".png", {maxZoom: 4});
+        overlays[name] = L.tileLayer("../{z}/{x}/{y}" + name + ".png", {
+            maxZoom: 4,
+            continuousWorld: true, // Do not wrap to [-180; 180] nor clamp to [-90; 90] coordinates.
+            noWrap: true
+        });
 
         createOverlayControl(name, overlays[name]);
     }
@@ -139,7 +143,11 @@
             }
     );
 
-    L.tileLayer("../{z}/{x}/{y}" + "whiteBG" + ".png", {maxZoom: 4}).addTo(map);
+    L.tileLayer("../{z}/{x}/{y}" + "whiteBG" + ".png", {
+        maxZoom: 4,
+        continuousWorld: true, // Do not wrap to [-180; 180] nor clamp to [-90; 90] coordinates.
+        noWrap: true
+    }).addTo(map);
 
     function createOverlayControl(id, overlay) {
         var newControl = overlayControlTemplate.cloneNode(true), // Deep copy.

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaflet Zoomable Image Options mockup 2</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <!--<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <script src="http://79.170.44.117/nateprototype.com/Prototype/leaflet.js"></script>-->
+    
+    <style>
+
+        #map {
+            width: 1024px;
+            height: 768px;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+
+</head>
+<body>
+<h1>Leaflet Zoomable Image Options mockup 2</h1>
+
+<form id="userInput">
+    <u>Box Color</u>
+    <br />
+    <input type="radio" id="boxSelect01" name="boxSelect" value="01" checked="checked" /><label for="boxSelect01">1. Red</label>
+    <br />
+    <input type="radio" id="boxSelect02" name="boxSelect" value="02" /><label for="boxSelect02">2. Blue</label>
+    <br />
+    <u>Circle Color</u>
+    <br />
+    <input type="radio" id="circleSelect01" name="circleSelect" value="01" /><label for="circleSelect01">1. Orange</label>
+    <br />
+    <input type="radio" id="circleSelect02" name="circleSelect" value="02" checked="checked" /><label for="circleSelect02">2. Yellow</label>
+    <br />
+    <input type="button" value="Submit" onclick="changeTiles()"/>
+</form>
+<br />
+<br />
+
+<div id="map"></div>
+
+<script src="leaflet.tileLayer.zoomableImageOptions.js"></script>
+
+</body>
+</html>
